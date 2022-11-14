@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[131]:
+# In[10]:
 
 
 # Import Module
@@ -20,7 +20,7 @@ sns.set_style("darkgrid")
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[132]:
+# In[11]:
 
 
 def getfiles() -> dict:
@@ -55,7 +55,7 @@ def getfiles() -> dict:
     return dfs
 
 
-# In[133]:
+# In[12]:
 
 
 def preprocessing_time(df:pd.DataFrame) -> pd.DataFrame:
@@ -101,7 +101,7 @@ def preprocessing_time(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# In[134]:
+# In[13]:
 
 
 def column_drop(df:pd.DataFrame) -> pd.DataFrame:
@@ -123,7 +123,7 @@ def column_drop(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# In[135]:
+# In[14]:
 
 
 def phys_preprocessing(df:pd.DataFrame) -> pd.DataFrame:
@@ -151,21 +151,8 @@ def phys_preprocessing(df:pd.DataFrame) -> pd.DataFrame:
     df['EDA'] = df['EDA'].apply(lambda x: x.split(' ')[-1] if (x is not np.nan) else x)
     df['EDA'] = pd.to_numeric(df['EDA'], errors='coerce') # float가 아니면 NaN
     df['EDA'] = df['EDA'].interpolate(method = 'nearest')
-#     print()
-    
     near = df['EDA'][max(df[df['EDA'].isna()].index) + 1]
-#     print(near)
     df['EDA'].replace(to_replace = default, value = near, inplace = True)
-    
-#         left_near = 
-#     try:
-#         try:
-#             
-#         except KeyError: #마지막 값이 0인 경우
-#                 near = df['EDA'][np.argmax(df[df['EDA'] == 'default'].index) - 1]
-#                 df['EDA'].replace(['default'], near, inplace = True)
-#     except ValueError: # 만약 default 값이 없는 경우
-#         pass
 
     
     ############################ BVP ############################
@@ -173,31 +160,12 @@ def phys_preprocessing(df:pd.DataFrame) -> pd.DataFrame:
     # 이것도 위의 EDA와 똑같은 처리를 해준다.
     
     df['BVP'] = df['BVP'].apply(lambda x: np.nan if x in default else x)
-    
-#     try:
-        
-#     except KeyError: #마지막 값이 0인 경우
-#         pass
-#         i = 1
-#         while True:
-#             near = df['BVP'][np.argmax(df[df['BVP'] in space].index) - i]
-#             if near in space:
-#                 i += 1
-#             else:
-# #                 df['BVP'].replace([space], near, inplace = True)
-#     except ValueError: # 만약 default 값이 없는 경우
-#         pass
-#     # 시간 값을 모두 없애고 유의미한 값만 남김, float로 만듦
-#     try:
+    # 시간 값을 모두 없애고 유의미한 값만 남김, float로 만듦
     df['BVP'] = df['BVP'].apply(lambda x: x.split('.')[-1] if (x is not np.nan) else x)
     df['BVP'] = pd.to_numeric(df['BVP'], errors='coerce') # float가 아니면 NaN
     df['BVP'] = df['BVP'].interpolate(method = 'nearest')
     near = df['BVP'][max(df[df['BVP'].isna()].index) + 1]
-#     near = df['BVP'][np.argmax(df[df['BVP'] in default].bool().index) + 1
     df['BVP'].replace(to_replace = default, value = near, inplace = True)
-#     df['BVP'] = df['BVP'].astype('float')
-#     except:
-#         df['BVP']
     
     ############################ TMP ############################
     # 결측값에는 다 O가 들어가 있기 때문에 모두 확인.
@@ -236,7 +204,7 @@ def phys_preprocessing(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# In[136]:
+# In[15]:
 
 
 def median_filter(df:pd.DataFrame) -> pd.DataFrame:
@@ -254,12 +222,12 @@ def median_filter(df:pd.DataFrame) -> pd.DataFrame:
        'l_dir_z', 'l_gaze_origin_x', 'l_gaze_origin_y', 'l_gaze_origin_z',
        'l_pupil', 'l_pupil_pos_x', 'l_pupil_pos_y']
 
-    df= df[target_col].apply(medfilt, kernel_size = 7, axis = 0)
+    df[target_col] = df[target_col].apply(medfilt, kernel_size = 7, axis = 0)
 
     return df
 
 
-# In[137]:
+# In[16]:
 
 
 def padding_to_numeric(df:pd.DataFrame) -> pd.DataFrame:
@@ -284,7 +252,7 @@ def padding_to_numeric(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# In[138]:
+# In[17]:
 
 
 def write(df:pd.DataFrame, name:str) -> None:
@@ -304,11 +272,11 @@ def write(df:pd.DataFrame, name:str) -> None:
     
 
 
-# In[ ]:
+# In[18]:
 
 
 if __name__ == "__main__":
-#     dfs = getfiles()
+    dfs = getfiles()
     for video in dfs:
         print(video)
         a = dfs[video].copy()
